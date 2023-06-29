@@ -1,0 +1,273 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpO2 - Central de Monitoreo</title>
+  </head>
+  <link rel="stylesheet" type="text/css" href="index.css">
+  <body>
+    <header class="header">
+      <img class="header__img" src="logo.jpg" alt="monitor">
+      <div class="header__fecha-hora">
+          <div class="header__fecha-hora--fecha">
+              <p>2023 - junio - 15</p>
+          </div>
+          <div class="header__fecha-hora--hora">
+              <p>12:45</p>
+          </div>
+      </div>
+      <div class="header__cama">
+          CAMA: 105
+      </div>
+      <div class="header__paciente"></div>
+      <div class="header__alarmas"></div>
+      <div class="header__conexion"></div>
+    </header>
+   <div class="señales_parámetros">
+      <div class="SpO2_0">
+        <div class="chart-container" style="position: relative; height:200px; width:400px">
+          <canvas id="myChart" width="400px" height="200px"></canvas>
+        </div>
+      </div>
+      <div class="SpO2_1">
+        <div class="chart-container" style="position: relative; height:200px; width:400px">
+          <canvas id="myChart1" width="400px" height="200px"></canvas>
+        </div>
+      </div>
+      <div class="SpO2_2">
+        <div class="chart-container" style="position: relative; height:200px; width:400px">
+          <canvas id="myChart2" width="400px" height="200px"></canvas>
+        </div>
+      </div>
+      <div class="SpO2_3">
+        <div class="chart-container" style="position: relative; height:200px; width:400px">
+          <canvas id="myChart3" width="400px" height="200px"></canvas>
+        </div>
+      </div>
+      <div class="SpO2_4">
+        <div class="chart-container" style="position: relative; height:200px; width:400px">
+          <canvas id="myChart4" width="400px" height="200px"></canvas>
+        </div>
+      </div>
+      <div class="fc"></div>      
+   </div>
+    <footer></footer>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script>
+      // Script para obtener los datos de los eventos y graficar
+      var datos = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+      var datos1 = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+      var datos2 = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+      var datos3 = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+      var datos4 = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+      $(function () {
+        var socket = io();
+        socket.on('RFMH-display', function(msj){
+          var chartView = document.getElementsByClassName('SpO2_0');
+          chartView[0].style.display = msj
+          chartView[0].display = msj
+        })
+        socket.on('EQUIPO1-display', function(msj){
+          var chartView = document.getElementsByClassName('SpO2_1');
+          chartView[0].style.display = msj
+          chartView[0].display = msj
+        })
+        socket.on('EQUIPO2-display', function(msj){
+          var chartView = document.getElementsByClassName('SpO2_2');
+          chartView[0].style.display = msj
+          chartView[0].display = msj
+        })
+        socket.on('EQUIPO3-display', function(msj){
+          var chartView = document.getElementsByClassName('SpO2_3');
+          chartView[0].style.display = msj
+          chartView[0].display = msj
+        })
+        socket.on('EQUIPO4-display', function(msj){
+          var chartView = document.getElementsByClassName('SpO2_4');
+          chartView[0].style.display = msj
+          chartView[0].display = msj
+        })
+
+        socket.on('RFMH', function(msg){
+          var chartView = document.getElementsByClassName('SpO2_0');
+          chartView[0].style.display = "block"
+          chartView[0].display = "block"
+          console.log(msg)
+          if (chart) {
+            console.log('Actualizando la gráfica')
+            console.log(chart.data.datasets["0"].data)
+            for (var i=0;i<=19;i++){
+              chart.data.datasets["0"].data[i]=chart.data.datasets["0"].data[i+1]
+            }
+            chart.data.datasets["0"].data[i]=10*parseFloat(msg)
+            console.log(chart.data.datasets["0"].data)
+            chart.update()
+          }
+        });
+        socket.on('EQUIPO1', function(msg){
+          var chartView = document.getElementsByClassName('SpO2_1');
+          chartView[0].style.display = "block"
+          chartView[0].display = "block"
+          console.log(msg)
+          if (chart1) {
+            console.log('Actualizando la gráfica')
+            console.log(chart1.data.datasets["0"].data)
+            for (var i=0;i<=19;i++){
+              chart1.data.datasets["0"].data[i]=chart1.data.datasets["0"].data[i+1]
+            }
+            chart1.data.datasets["0"].data[i]=10*parseFloat(msg)
+            console.log(chart1.data.datasets["0"].data)
+            chart1.update()
+          }
+        });
+        socket.on('EQUIPO2', function(msg){
+          var chartView = document.getElementsByClassName('SpO2_2');
+          chartView[0].style.display = "block"
+          chartView[0].display = "block"
+          console.log(msg)
+          if (chart2) {
+            console.log('Actualizando la gráfica')
+            console.log(chart2.data.datasets["0"].data)
+            for (var i=0;i<=19;i++){
+              chart2.data.datasets["0"].data[i]=chart2.data.datasets["0"].data[i+1]
+            }
+            chart2.data.datasets["0"].data[i]=10*parseFloat(msg)
+            console.log(chart2.data.datasets["0"].data)
+            chart2.update()
+          }
+        });
+        socket.on('EQUIPO3', function(msg){
+          var chartView = document.getElementsByClassName('SpO2_3');
+          chartView[0].style.display = "block"
+          chartView[0].display = "block"
+          console.log(msg)
+          if (chart3) {
+            console.log('Actualizando la gráfica')
+            console.log(chart3.data.datasets["0"].data)
+            for (var i=0;i<=19;i++){
+              chart3.data.datasets["0"].data[i]=chart3.data.datasets["0"].data[i+1]
+            }
+            chart3.data.datasets["0"].data[i]=10*parseFloat(msg)
+            console.log(chart3.data.datasets["0"].data)
+            chart3.update()
+          }
+        });
+        socket.on('EQUIPO4', function(msg){
+          var chartView = document.getElementsByClassName('SpO2_4');
+          chartView[0].style.display = "block"
+          chartView[0].display = "block"
+          console.log(msg)
+          if (chart4) {
+            console.log('Actualizando la gráfica')
+            console.log(chart4.data.datasets["0"].data)
+            for (var i=0;i<=19;i++){
+              chart4.data.datasets["0"].data[i]=chart4.data.datasets["0"].data[i+1]
+            }
+            chart4.data.datasets["0"].data[i]=10*parseFloat(msg)
+            console.log(chart4.data.datasets["0"].data)
+            chart4.update()
+          }
+        });
+      });
+    </script>
+    <script>
+      // Script para crear el área de graficado y el tipo de gráfica
+      var ctx = document.getElementById('myChart').getContext('2d');
+      var chart = new Chart(ctx, {
+          // The type of chart we want to create
+          type: 'line',
+          // The data for our dataset
+          data: {
+              labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19'],
+              datasets: [{
+                  label: 'My First dataset',
+                  borderColor: 'rgb(255, 99, 132)',
+                  data: datos
+              }]
+          },
+          // Configuration options go here
+          options: {}
+      });
+    </script>
+    <script>
+      // Script para crear el área de graficado y el tipo de gráfica
+      var ctx1 = document.getElementById('myChart1').getContext('2d');
+      var chart1 = new Chart(ctx1, {
+          // The type of chart we want to create
+          type: 'line',
+          // The data for our dataset
+          data: {
+              labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19'],
+              datasets: [{
+                  label: 'My First dataset',
+                  borderColor: 'rgb(255, 99, 132)',
+                  data: datos1
+              }]
+          },
+          // Configuration options go here
+          options: {}
+      });
+    </script>
+    <script>
+      // Script para crear el área de graficado y el tipo de gráfica
+      var ctx2 = document.getElementById('myChart2').getContext('2d');
+      var chart2 = new Chart(ctx2, {
+          // The type of chart we want to create
+          type: 'line',
+          // The data for our dataset
+          data: {
+              labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19'],
+              datasets: [{
+                  label: 'My First dataset',
+                  borderColor: 'rgb(255, 99, 132)',
+                  data: datos2
+              }]
+          },
+          // Configuration options go here
+          options: {}
+      });
+    </script>
+    <script>
+      // Script para crear el área de graficado y el tipo de gráfica
+      var ctx3 = document.getElementById('myChart3').getContext('2d');
+      var chart3 = new Chart(ctx3, {
+          // The type of chart we want to create
+          type: 'line',
+          // The data for our dataset
+          data: {
+              labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19'],
+              datasets: [{
+                  label: 'My First dataset',
+                  borderColor: 'rgb(255, 99, 132)',
+                  data: datos3
+              }]
+          },
+          // Configuration options go here
+          options: {}
+      });
+    </script>
+    <script>
+      // Script para crear el área de graficado y el tipo de gráfica
+      var ctx4 = document.getElementById('myChart4').getContext('2d');
+      var chart4 = new Chart(ctx4, {
+          // The type of chart we want to create
+          type: 'line',
+          // The data for our dataset
+          data: {
+              labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19'],
+              datasets: [{
+                  label: 'My First dataset',
+                  borderColor: 'rgb(255, 99, 132)',
+                  data: datos4
+              }]
+          },
+          // Configuration options go here
+          options: {}
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "proyecto",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "RFMH",
+  "license": "MIT",
+  "dependencies": {
+    "aedes": "^0.48.1",
+    "aedes-persistence-redis": "^9.0.1",
+    "express": "^4.18.2",
+    "mqemitter-redis": "^5.0.0",
+    "redis": "^4.5.1",
+    "socket.io": "^4.6.2"
+  }
+}
